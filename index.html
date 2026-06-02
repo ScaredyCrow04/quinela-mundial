@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>🏆 Sorteo Mundial Rda por Rda</title>
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --border: #334155;
+        }
+
+        .quinela-wrapper {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #fff, var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .turn-announcer {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px dashed var(--accent-blue);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 30px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+
+        .btn-draw {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-draw:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.5);
+        }
+
+        .btn-draw:disabled {
+            background: #475569;
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .lottery-section {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        .ball-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            background: radial-gradient(circle at 30% 30%, #38bdf8, #0369a1, #0f172a);
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.3rem;
+        }
+
+        .ball-container.shaking {
+            animation: shake 0.4s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-4px, 4px); }
+            40% { transform: translate(4px, -4px); }
+            60% { transform: translate(-4px, -4px); }
+            80% { transform: translate(4px, 4px); }
+        }
+
+        #status-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-top: 10px;
+            min-height: 35px;
+        }
+
+        .table-section {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .table-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            border-left: 4px solid var(--accent-blue);
+            padding-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(15, 23, 42, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        th, td {
+            padding: 14px 15px;
+            text-align: left;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #0f172a;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        tr.active-row {
+            background-color: rgba(56, 189, 248, 0.08);
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        tr.completed-row {
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        tr.completed-row td:first-child {
+            color: var(--accent-green);
+        }
+
+        .flag-span {
+            font-size: 1.2rem;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .empty-slot {
+            color: var(--text-muted);
+            opacity: 0.25;
+        }
+
+        .footer-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-reset {
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quinela-wrapper">
+    <div class="container">
+        <h1>🏆 Sorteo Mundial Rda por Rda</h1>
+        <p class="subtitle">Fase de Grupos • Formato Vertical Estricto (Socio 1 a 12)</p>
+
+        <div id="turn-display" class="turn-announcer">Conectando con la nube...</div>
+
+        <div class="controls-wrapper">
+            <button id="draw-btn" class="btn-draw" onclick="triggerLottery()" disabled>¡GIRAR Y SACAR ESFERA!</button>
+        </div>
+
+        <div class="lottery-section">
+            <div id="ball" class="ball-container">⚽</div>
+            <div id="status-text">—</div>
+        </div>
+
+        <div class="table-section">
+            <h2>📋 Panel de Posiciones e Historial</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Participante</th>
+                        <th>Ronda 1</th>
+                        <th>Ronda 2</th>
+                        <th>Ronda 3</th>
+                        <th>Ronda 4</th>
+                    </tr>
+                </thead>
+                <tbody id="table-rows"></tbody>
+            </table>
+        </div>
+
+        <div class="footer-actions">
+            <div style="color:var(--text-muted); font-size:0.85rem;" id="pool-counter">Esferas en tómbola: --/48</div>
+            <button class="btn-reset" onclick="resetLotteryData()">Reiniciar Sorteo</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // Credenciales oficiales vinculadas a tu consola
+    const firebaseConfig = {
+        apiKey: "AIzaSyDntD924-w5wunfS8yggg8DR2WgU2mVNdo",
+        authDomain: "quinela-mundial-db807.firebaseapp.com",
+        databaseURL: "https://quinela-mundial-db807-default-rtdb.firebaseio.com/",
+        projectId: "quinela-mundial-db807",
+        storageBucket: "quinela-mundial-db807.firebasestorage.app",
+        messagingSenderId: "71114710640",
+        appId: "1:71114710640:web:48a1c9ef00cc0cb1d03565"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const sorteoRef = ref(db, 'sorteoMundial');
+
+    const listadoOficialMundial = [
+        {"nombre": "USA", "flag": "🇺🇸"}, {"nombre": "Canadá", "flag": "🇨🇦"}, {"nombre": "México", "flag": "🇲🇽"},
+        {"nombre": "Japón", "flag": "🇯🇵"}, {"nombre": "Nueva Zelanda", "flag": "🇳🇿"}, {"nombre": "Irán", "flag": "🇮🇷"},
+        {"nombre": "Argentina", "flag": "🇦🇷"}, {"nombre": "Uzbekistán", "flag": "🇺🇿"}, {"nombre": "Corea del Sur", "flag": "🇰🇷"},
+        {"nombre": "Jordania", "flag": "🇯🇴"}, {"nombre": "Australia", "flag": "🇦🇺"}, {"nombre": "Brasil", "flag": "🇧🇷"},
+        {"nombre": "Ecuador", "flag": "🇪🇨"}, {"nombre": "Uruguay", "flag": "🇺🇾"}, {"nombre": "Paraguay", "flag": "🇵🇾"},
+        {"nombre": "Colombia", "flag": "🇨🇴"}, {"nombre": "Marruecos", "flag": "🇲🇦"}, {"nombre": "Túnez", "flag": "🇹🇳"},
+        {"nombre": "Egipto", "flag": "🇪🇬"}, {"nombre": "Argelia", "flag": "🇩🇿"}, {"nombre": "Ghana", "flag": "🇬🇭"},
+        {"nombre": "Cabo Verde", "flag": "🇨🇻"}, {"nombre": "Sudáfrica", "flag": "🇿🇦"}, {"nombre": "Qatar", "flag": "🇶🇦"},
+        {"nombre": "Arabia Saudita", "flag": "🇸🇦"}, {"nombre": "Senegal", "flag": "🇸🇳"}, {"nombre": "Costa de Marfil", "flag": "🇨🇮"},
+        {"nombre": "Inglaterra", "flag": "🇬🇧"}, {"nombre": "Francia", "flag": "🇫🇷"}, {"nombre": "Croacia", "flag": "🇭🇷"},
+        {"nombre": "Portugal", "flag": "🇵🇹"}, {"nombre": "Noruega", "flag": "🇳🇴"}, {"nombre": "Alemania", "flag": "🇩🇪"},
+        {"nombre": "Países Bajos", "flag": "🇳🇱"}, {"nombre": "Suiza", "flag": "🇨🇭"}, {"nombre": "España", "flag": "🇪🇸"},
+        {"nombre": "Escocia", "flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿"}, {"nombre": "Austria", "flag": "🇦🇹"}, {"nombre": "Bélgica", "flag": "🇧🇪"},
+        {"nombre": "Panamá", "flag": "🇵🇦"}, {"nombre": "Curazao", "flag": "🇨🇼"}, {"nombre": "Haití", "flag": "🇭🇹"},
+        {"nombre": "Suecia", "flag": "🇸🇪"}, {"nombre": "Turquía", "flag": "🇹🇷"}, {"nombre": "Chequia", "flag": "🇨🇿"},
+        {"nombre": "Bosnia y Herz.", "flag": "🇧🇦"}, {"nombre": "R.D. Congo", "flag": "🇨🇩"}, {"nombre": "Irak", "flag": "🇮🇶"}
+    ];
+
+    const sociosOrdenados = [
+        "Socio 1", "Socio 2", "Socio 3", "Socio 4", "Socio 5", "Socio 6",
+        "Socio 7", "Socio 8", "Socio 9", "Socio 10", "Socio 11", "Socio 12"
+    ];
+
+    let tómbola = [];
+    let registroAsignaciones = {};
+    let indiceTurnoActual = 0;
+    let animando = false;
+
+    onValue(sorteoRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            tómbola = data.tombola || [];
+            registroAsignaciones = data.asignaciones || {};
+            indiceTurnoActual = data.indiceTurnoActual || 0;
+        } else {
+            tómbola = [...listadoOficialMundial];
+            registroAsignaciones = {};
+            sociosOrdenados.forEach(socio => { registroAsignaciones[socio] = ["vacío"]; });
+            indiceTurnoActual = 0;
+            saveToCloud();
+        }
+        
+        sociosOrdenados.forEach(socio => {
+            if (!registroAsignaciones[socio] || registroAsignaciones[socio][0] === "vacío") {
+                registroAsignaciones[socio] = [];
+            }
+        });
+
+        renderTable();
+        updateCounter();
+        updateTurnAnnouncer();
+    });
+
+    function saveToCloud() {
+        const copiaAsignaciones = JSON.parse(JSON.stringify(registroAsignaciones));
+        sociosOrdenados.forEach(socio => {
+            if (!copiaAsignaciones[socio] || copiaAsignaciones[socio].length === 0) {
+                copiaAsignaciones[socio] = ["vacío"];
+            }
+        });
+
+        set(sorteoRef, {
+            tombola: tómbola,
+            asignaciones: copiaAsignaciones,
+            indiceTurnoActual: indiceTurnoActual
+        });
+    }
+
+    function updateCounter() {
+        document.getElementById('pool-counter').innerText = `Esferas restantes en la tómbola: ${tómbola.length}/48`;
+    }
+
+    function updateTurnAnnouncer() {
+        const announcer = document.getElementById('turn-display');
+        const btn = document.getElementById('draw-btn');
+
+        if (animando) return;
+
+        if (tómbola.length === 0 || indiceTurnoActual >= sociosOrdenados.length * 4) {
+            announcer.innerText = "🎉 ¡SORTEO OFICIAL COMPLETADO! Todos los socios tienen 4 selecciones.";
+            announcer.style.background = "rgba(16, 185, 129, 0.1)";
+            announcer.style.borderColor = "var(--accent-green)";
+            announcer.style.color = "var(--accent-green)";
+            btn.disabled = true;
+            return;
+        }
+
+        const socioEnTurno = sociosOrdenados[indiceTurnoActual % sociosOrdenados.length];
+        const rondaActual = Math.floor(indiceTurnoActual / sociosOrdenados.length) + 1;
+
+        announcer.innerHTML = `⏱️ Turno de: <strong>${socioEnTurno}</strong> — Seleccionando para la <strong>Ronda ${rondaActual}</strong>`;
+        btn.disabled = false;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('table-rows');
+        tbody.innerHTML = '';
+
+        const socioEnTurnoActual = tómbola.length > 0 ? sociosOrdenados[indiceTurnoActual % sociosOrdenados.length] : "";
+
+        sociosOrdenados.forEach(user => {
+            const teams = registroAsignaciones[user] || [];
+            const isHisTurn = (user === socioEnTurnoActual && tómbola.length > 0);
+            const isCompleted = teams.length === 4;
+
+            let rowClass = "";
+            if (isHisTurn) rowClass = "active-row";
+            else if (isCompleted) rowClass = "completed-row";
+
+            let rowHtml = `<tr class="${rowClass}">`;
+            rowHtml += `<td><strong>${user}</strong> ${isHisTurn ? '🎯' : ''} ${isCompleted ? '✅' : ''}</td>`;
+
+            for (let i = 0; i < 4; i++) {
+                if (teams[i] && teams[i] !== "vacío") {
+                    rowHtml += `<td><span class="flag-span">${teams[i].flag}</span><strong>${teams[i].nombre}</strong></td>`;
+                } else {
+                    rowHtml += `<td><span class="empty-slot">—</span></td>`;
+                }
+            }
+            rowHtml += '</tr>';
+            tbody.innerHTML += rowHtml;
+        });
+    }
+
+    window.triggerLottery = function() {
+        const btn = document.getElementById('draw-btn');
+        const ball = document.getElementById('ball');
+        const statusText = document.getElementById('status-text');
+
+        if (tómbola.length === 0 || indiceTurnoActual >= sociosOrdenados.length * 4 || animando) return;
+
+        const socioEnTurno = sociosOrdenados[indiceTurnoActual % sociosOrdenados.length];
+
+        animando = true;
+        btn.disabled = true;
+        ball.classList.add('shaking');
+        statusText.innerText = `Mezclando para ${socioEnTurno}...`;
+        statusText.style.color = "var(--text-muted)";
+
+        setTimeout(() => {
+            ball.classList.remove('shaking');
+
+            const index = Math.floor(Math.random() * tómbola.length);
+            const objetoEquipo = tómbola.splice(index, 1)[0];
+
+            if (!registroAsignaciones[socioEnTurno]) {
+                registroAsignaciones[socioEnTurno] = [];
+            }
+            registroAsignaciones[socioEnTurno].push(objetoEquipo);
+
+            statusText.innerHTML = `¡A <strong>${socioEnTurno}</strong> le tocó: <span style="color:var(--accent-blue)">${objetoEquipo.flag} ${objetoEquipo.nombre}</span>!`;
+
+            indiceTurnoActual++;
+            animando = false;
+
+            saveToCloud();
+        }, 1100);
+    }
+
+    window.resetLotteryData = function() {
+        if (confirm("¿Seguro que quieres reiniciar el sorteo en la nube? Esto borrará el progreso de todos.")) {
+            document.getElementById('status-text').innerText = "—";
+            tómbola = [...listadoOficialMundial];
+            registroAsignaciones = {};
+            sociosOrdenados.forEach(socio => { registroAsignaciones[socio] = ["vacío"]; });
+            indiceTurnoActual = 0;
+            saveToCloud();
+        }
+    }
+</script>
+</body>
+</html>
