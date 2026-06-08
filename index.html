@@ -301,9 +301,10 @@
         {"nombre": "Bosnia y Herz.", "flag": "🇧🇦"}, {"nombre": "R.D. Congo", "flag": "🇨🇩"}, {"nombre": "Irak", "flag": "🇮🇶"}
     ];
 
+    // Lista de socios actualizada con el orden oficial solicitado
     const sociosOrdenados = [
-        "Socio 1", "Socio 2", "Socio 3", "Socio 4", "Socio 5", "Socio 6",
-        "Socio 7", "Socio 8", "Socio 9", "Socio 10", "Socio 11", "Socio 12"
+        "David", "Diego", "Lalo", "Alex", "Azu", "Larissa", 
+        "Kinardo", "Rodo", "Noe", "Sebastian", "Miros", "Adolfo"
     ];
 
     let tómbola = [];
@@ -352,7 +353,7 @@
     }
 
     function updateCounter() {
-        document.getElementById('pool-counter').innerText = `Esferas restantes en la tómbola: ${tómbola.length}/48`;
+        document.getElementById('pool-counter').innerText = `Esferas en tómbola: ${tómbola.length}/48`;
     }
 
     function updateTurnAnnouncer() {
@@ -455,3 +456,5 @@
 </script>
 </body>
 </html>
+         
+     
